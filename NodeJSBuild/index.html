@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="text-align: center;">
+      <h1>Završni rad ISBIT</h1>
+    </div>
+    <div style="display: flex; flex-direction: row;">
+      <div style="width: 50%; text-align: left; padding-left: 10px;">
+        <button type="button" id="updateBtn">Update</button>
+        <form id="TokenCreation" action="/SubmitToken" method="post">
+            <label for="dropdown">Choose your address:</label>
+            <select id="dropdown" name="dropdown">
+            <!-- Add more options as needed -->
+            </select><br>
+            
+            <br><br>
+            <label for="TokenName">Enter the name of your token:</label>
+            <input type="text" name="TokenName" required><br>
+            <label for="TokenTag">Enter a tag for your token:</label>
+            <input type="text" name="TokenTag" required><br>
+            <label for="TotalSupply">Enter the overall supply:</label>
+            <input type="number" name="TotalSupply" required>
+            <br><br>
+
+            <input id="TokenCreateButton" type="submit" value="Create a token">
+          </form>
+        <h2 id="TName">Section 1</h2>
+        <h2 id="TTag">Section 2</h2>
+        <h2 id="TSupply">Section 2</h2>
+
+        <button id="Mint" style="display: none;">Mint 100</button>
+        <br><br>
+        <button id="Burn" style="display: none;">Burn 100</button>
+        <br><br>
+        <h2>Send tokens to a diffrent account</h2>
+        <form id="TokenSend" action="/SendToken" method="post">
+          <label for="dropdown">Choose your address:</label>
+          <select id="dropdown1" name="dropdown1">
+          <!-- Add more options as needed -->
+          </select><br>
+          <br><br>
+          <label for="TokenName">Enter the amount of tokens:</label>
+          <input type="number" name="TokenAmount" required><br>
+          <input id="CreateTrans" type="submit" value="Create a transaction">
+          <br><br>
+        </form>
+        <button id="TokenSendButton">Send tokens</button>
+
+      </div>
+      <div style="width: 50%;">
+        <form id="BalanceCheck" action="/BalanceCheck" method="post">
+        <select id="dropdown3" name="dropdown3">
+          <!-- Add more options as needed -->
+        </select><br>
+        <input id="BalanceCheck" type="submit" value="Select account">
+      </form>
+        <h2 id="OwnBalance">Owner account balance : </h2>
+        <button id="CheckBalance">Check balance</button>
+
+
+      </div>
+    </div>
+<script>
+    const updateBtn = document.getElementById("updateBtn");
+    const dropdown = document.getElementById("dropdown");
+    const dropdown1 = document.getElementById("dropdown1");
+    const dropdown3 = document.getElementById("dropdown3");
+
+    const TokForm = document.getElementById("TokenCreation");
+    updateBtn.addEventListener("click", function() {
+  fetch("/options")
+    .then(response => response.json())
+    .then(options => {
+      dropdown.innerHTML = options.map(option => `<option value="${option}">${option}</option>`).join("");
+      dropdown1.innerHTML = options.map(option => `<option value="${option}">${option}</option>`).join("");
+      dropdown3.innerHTML = options.map(option => `<option value="${option}">${option}</option>`).join("");
+    });
+    fetch('/CreateAToken')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.TokName);
+        document.getElementById('TName').innerHTML= data.TokName;
+        document.getElementById('TTag').innerHTML= data.TokTag;
+        document.getElementById('TSupply').innerHTML= data.TokSupply;
+    });
+});
+document.getElementById('CheckBalance').addEventListener('click', function() {
+    fetch('/CheckBalance')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.TokName);
+        document.getElementById('OwnBalance').innerHTML= data.BalanceAmount;
+        
+    });
+});
+document.getElementById('TokenSendButton').addEventListener('click', function() {
+    fetch('/SendTokens')
+    .then(response => response.json())
+    .then(data => {
+      
+    });
+});
+document.getElementById('CreateTrans').addEventListener('click', function() {
+    //document.getElementById('TokenSend').style.display = 'none';
+    
+});
+document.getElementById('TokenCreateButton').addEventListener('click', function() {
+    TokForm.submit(TokForm);
+    document.getElementById('Mint').style.display = 'block';
+    document.getElementById('Burn').style.display = 'block';
+    document.getElementById('TokenCreation').style.display = 'none';
+    fetch('/CreateAToken')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.TokName);
+        document.getElementById('TName').innerHTML= data.TokName;
+        document.getElementById('TTag').innerHTML= data.TokTag;
+        document.getElementById('TSupply').innerHTML= data.TokSupply;
+    });
+});
+
+document.getElementById('Mint').addEventListener('click', function() {
+  fetch('/Mint')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('TSupply').innerHTML= data.TokSupply;
+    });
+});
+document.getElementById('Burn').addEventListener('click', function() {
+  fetch('/Burn')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('TSupply').innerHTML= data.TokSupply;
+    });
+});
+</script>
+</body>
+</html>
