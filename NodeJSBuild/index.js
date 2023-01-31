@@ -179,7 +179,7 @@ async function SendFunction(){
         .send({
           from: OwnerAddress,
           gas: "1000000",
-          gasPrice: "1000000",
+          gasPrice: "1000000000",
         })
         .then(() => {
           console.log("Transfer succesful");
